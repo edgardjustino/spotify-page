@@ -1,35 +1,37 @@
-const searchInput = document.getElementById('search-input');
-const resultArtists = document.getElementById('result-artist');
-const resultPlaylist = document.getElementById('result-playlists');
+const greetingElement = document.getElementById("greeting");
 
-function requestApi(searchTerm){
-  fetch('json-server --watch api-artists/artists.json --port 3000')
-  .then((response)=> response.json())
-  .then((results)=> displayresults(results));
-}
+const currentHour = new Date().getHours();
 
-function displayResults(results) {
-  hidePlaylists();
-  const artistImage = document.getElementById("artist-img");
-  const artistName = document.getElementById("artist-name");
+// Define a saudação com base na hora atual
+// if (currentHour >= 5 && currentHour < 12) {
+//   greetingElement.textContent = "Bom dia";
+// } else if (currentHour >= 12 && currentHour < 18) {
+//   greetingElement.textContent = "Boa tarde";
+// } else {
+//   greetingElement.textContent = "Boa noite";
+// }
 
-  results.forEach((element) => {
-    artistImage.src = element.urlImg;
-    artistName.innerText = element.name;
-  });
-  resultArtist.classList.remove("hidden");
-}
+const greetingMessage =
+  currentHour >= 5 && currentHour < 12
+    ? "Bom dia"
+    : currentHour >= 12 && currentHour < 18
+    ? "Boa tarde"
+    : "Boa noite";
 
-function hidePlaylists() {
-  playlistContainer.classList.add("hidden");
-}
+greetingElement.textContent = greetingMessage;
 
-document.addEventListener('input', function(){
-  const searchTerm = searchInput.ariaValueMax.toLocaleLowerCase();
-  if (searchTerm === ''){
-    resultPlaylist.classList.add('hidden');
-    resultArtists.classList.remove('hidden');
-    return;//q não tem nada mais pra acontecer
-  }
-  requestApi(searchTerm);
+// GRID INTELIGENTE
+const container = document.querySelector(".offer__list-item");
+
+const observer = new ResizeObserver(() => {  //mudanças no tamanho do elemento 
+  const containerWidth = container.offsetWidth; //largura total do elemento, incluindo largura do conteúdo, bordas e preenchimento.
+  const numColumns = Math.floor(containerWidth / 200); //número de colunas com base na largura do container
+
+  //largura mínima de 200px e máxima de 1fr (uma fração do espaço disponível).
+  container.style.gridTemplateColumns = `repeat(${numColumns}, minmax(200px, 1fr))`;
+
+  console.log({ container });
+  console.log({ numColumns });
 });
+//observando a mudança do elemento
+observer.observe(container);
